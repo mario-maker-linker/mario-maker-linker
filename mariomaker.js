@@ -17,8 +17,10 @@ function marioMakerReplaceInElement(element, regex) {
 function marioMakerReplaceInText(text, regex) {
 	var match;
 	var matches = [];
-	while (match = regex.exec(text.data))
+	while (match = regex.exec(text.data)) {
 		matches.push(match);
+	}
+
 	for (var i = 0; i < matches.length; i++) {
 		marioMakerGetCourseInfo(matches[i], text);
 	}
@@ -26,7 +28,7 @@ function marioMakerReplaceInText(text, regex) {
 
 function marioMakerGetCourseInfo(match, text) {
 	var request = new XMLHttpRequest();
-	
+
 	request.onreadystatechange = function() {
 		if (request.readyState == XMLHttpRequest.DONE) {
 			if (request.status == 200) {
@@ -52,14 +54,18 @@ function marioMakerGetCourseInfo(match, text) {
 			}
 		}
 	}
-	var id = match[0].replace(" ", "-");
+	var id = marioMakerNormalizedCourseID(match[0]);
 	request.open("GET", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
 	request.withCredentials = true;
-	request.send()		
+	request.send()
+}
+
+function marioMakerNormalizedCourseID(string) {
+	return string.replace(/ /g, '-').toUpperCase();
 }
 
 function marioMakerInsertLink(match, token, bookmarked, text) {
-	var id = match[0].replace(" ", "-");
+	var id = marioMakerNormalizedCourseID(match[0]);
 	var link = document.createElement('a');
 	link.href = 'https://supermariomakerbookmark.nintendo.net/courses/'+id;
 	link.appendChild(document.createTextNode(match[0]));
@@ -93,7 +99,7 @@ function marioMakerInsertLink(match, token, bookmarked, text) {
 
 function marioMakerSetBookmark(id, token, button) {
 	var request = new XMLHttpRequest();
-	
+
 	request.onreadystatechange = function() {
 		if (request.readyState == XMLHttpRequest.DONE) {
 			if (request.status == 200) {
@@ -101,7 +107,7 @@ function marioMakerSetBookmark(id, token, button) {
 				button.parentElement.onclick = function(event) {
 					marioMakerUnsetBookmark(id, token, event.target);
 					return false;
-				}				
+				}
 			}
 			else {
 				alert("Error. Please make sure that you are logged in on supermariomakerbookmark.nintendo.net");
@@ -120,7 +126,7 @@ function marioMakerSetBookmark(id, token, button) {
 
 function marioMakerUnsetBookmark(id, token, button) {
 	var request = new XMLHttpRequest();
-	
+
 	request.onreadystatechange = function() {
 		if (request.readyState == XMLHttpRequest.DONE) {
 			if (request.status == 200) {
@@ -128,7 +134,7 @@ function marioMakerUnsetBookmark(id, token, button) {
 				button.parentElement.onclick = function(event) {
 					marioMakerSetBookmark(id, token, event.target);
 					return false;
-				}				
+				}
 			}
 			else {
 				alert("Error. Please make sure that you are logged in on supermariomakerbookmark.nintendo.net");
