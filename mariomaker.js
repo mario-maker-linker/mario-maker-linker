@@ -31,7 +31,7 @@ var find= /[0-9a-f]{4}[- ][0-9a-f]{4}[- ][0-9a-f]{4}[- ][0-9a-f]{4}/gi;
 
 marioMakerReplaceInElement(document.body, find, function(match) {
     var link = document.createElement('a');
-    link.href= 'http://supermariomaker.nintendo.com/course/'+match[0];
+    link.href= 'https://supermariomakerbookmark.nintendo.net/courses/'+match[0];
     link.appendChild(document.createTextNode(match[0]));
     return link;
 });
