@@ -26,7 +26,7 @@ function marioMakerReplaceInText(text, regex) {
     var matches = [];
     while (match = regex.exec(text.data))
         matches.push(match);
-    for (var i = matches.length; i-->0;) {
+    for (var i = 0; i < matches.length; i++) {
         match = matches[i];
         text.splitText(match.index);
         text.nextSibling.splitText(match[0].length);
