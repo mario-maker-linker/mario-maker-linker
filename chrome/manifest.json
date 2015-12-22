@@ -15,5 +15,8 @@
 	"icons": {
 		"128": "icon-128.png",
 		"48": "icon-48.png"
-	}
+	},
+	"permissions": [
+		"https://supermariomakerbookmark.nintendo.net/"
+	]
 }
