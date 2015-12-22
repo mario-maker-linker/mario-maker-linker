@@ -1,0 +1,1 @@
+../../mariomaker.js
