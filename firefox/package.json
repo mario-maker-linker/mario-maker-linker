@@ -1,0 +1,19 @@
+{
+  "title": "Super Mario Maker Course ID Linkifier",
+  "name": "mario-maker-linker",
+  "version": "0.1.0",
+  "description": "Converts all Super Mario Maker Course IDs into Bookmark links",
+  "main": "loader.js",
+  "author": "75th, freundTech",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "None",
+  "keywords": [
+    "mario",
+	"maker",
+	"link",
+	"course"
+  ]
+}
