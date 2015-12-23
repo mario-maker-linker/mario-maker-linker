@@ -1,8 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Super Mario Maker Course ID Linkifier",
-	"version": "0.3",
-	"version_name": "1.0 beta 3",
+	"version": "0.3.1",
 	"description": "Converts all Super Mario Maker Course IDs into Bookmark links",
 	"content_scripts": [
 		{
