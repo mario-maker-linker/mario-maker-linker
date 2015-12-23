@@ -1,5 +1,3 @@
-// All credit to http://stackoverflow.com/questions/1444409/in-javascript-how-can-i-replace-text-in-an-html-page-without-affecting-the-tags
-
 function marioMakerReplaceInElement(element, regex) {
 	// iterate over child nodes in reverse, as replacement may increase
 	// length of child node list.
