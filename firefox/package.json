@@ -1,13 +1,18 @@
 {
   "title": "Super Mario Maker Course ID Linkifier",
   "name": "mario-maker-linker",
-  "version": "0.2.0",
+  "icon": "icon.png",
+  "version": "0.3.1",
   "description": "Converts all Super Mario Maker Course IDs into Bookmark links",
   "main": "loader.js",
   "permissions": {
 	  "cross-domain-content": ["https://supermariomakerbookmark.nintendo.net"]
   },
-  "author": "75th, freundTech",
+  "author": "75th",
+  "contributors": [
+	  "freundTech"
+  ],
+  "homepage": "https://github.com/75th/mario-maker-linker",
   "engines": {
     "firefox": ">=38.0a1",
     "fennec": ">=38.0a1"
