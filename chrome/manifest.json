@@ -7,7 +7,7 @@
 	"content_scripts": [
 		{
 			"matches": ["http://*/*", "https://*/*"],
-			"exclude_matches": ["*://supermariomaker.nintendo.com/*"],
+			"exclude_matches": ["*://supermariomakerbookmark.nintendo.net/*"],
 			"js": ["mariomaker.js"],
 			"run_at": "document_end"
 		}

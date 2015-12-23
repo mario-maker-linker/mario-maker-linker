@@ -3,7 +3,7 @@ var pageMod = require("sdk/page-mod");
 
 pageMod.PageMod({
 	include: "*",
-	exclude: "*.supermariomaker.nintendo.com",
+	exclude: "*.supermariomakerbookmark.nintendo.net",
 	contentScriptWhen: "ready",
 	contentScriptFile: data.url("mariomaker.js")
 });
