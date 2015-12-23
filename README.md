@@ -16,16 +16,10 @@ At the moment this uses a very, very crude regular expression replacement on eve
 
 - Build script for all extensions, if possible
 
-### Chrome extension
-
 - Be more graceful about what domains the script runs on
     + Pre-load with common Mario Maker sharing sites?
-    + Allow domains to be configured? Will require UI and way deeper Chrome extension knowledge than I have at this moment
+    + Allow domains to be configured? Will require UI and way deeper extension knowledge than I have at this moment
     + A simple toolbar button to toggle the script on and off?
-
-### Firefox extension
-
-- Research making one or recruit help
 
 ### Safari extension
 
