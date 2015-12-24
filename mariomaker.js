@@ -3,11 +3,11 @@ function marioMakerReplaceInElement(element, regex) {
 	// length of child node list.
 	for (var i = 0; i < element.childNodes.length; i++) {
 		var child = element.childNodes[i];
-		if (child.nodeType == 1) { // ELEMENT_NODE
+		if (child.nodeType == Node.ELEMENT_NODE) {
 			var tag = child.nodeName.toLowerCase();
-			if (tag != 'style' && tag != 'script' && tag != 'a') // special cases, don't touch CDATA elements or links
+			if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
 				marioMakerReplaceInElement(child, regex);
-		} else if (child.nodeType == 3) { // TEXT_NODE
+		} else if (child.nodeType == Node.TEXT_NODE) {
 			marioMakerReplaceInText(child, regex);
 		}
 	}
