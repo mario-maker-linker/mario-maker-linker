@@ -3,11 +3,11 @@ function marioMakerReplaceInElement(element, regex) {
 	// length of child node list.
 	for (var i = 0; i < element.childNodes.length; i++) {
 		var child = element.childNodes[i];
-		if (child.nodeType == 1) { // ELEMENT_NODE
+		if (child.nodeType == Node.ELEMENT_NODE) {
 			var tag = child.nodeName.toLowerCase();
-			if (tag != 'style' && tag != 'script' && tag != 'a') // special cases, don't touch CDATA elements or links
+			if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
 				marioMakerReplaceInElement(child, regex);
-		} else if (child.nodeType == 3) { // TEXT_NODE
+		} else if (child.nodeType == Node.TEXT_NODE) {
 			marioMakerReplaceInText(child, regex);
 		}
 	}
@@ -86,6 +86,7 @@ function marioMakerInsertLink(match, token, bookmarked, text) {
 	}
 	directbookmarkimage = document.createElement('img');
 	directbookmarkimage.setAttribute('src', imageSrc);
+	directbookmarkimage.className = "marioMakerDirectBookmark";
 	directbookmark.appendChild(directbookmarkimage);
 
 	text.splitText(match.index);
@@ -149,6 +150,23 @@ function marioMakerUnsetBookmark(id, token, button) {
 	request.send();
 }
 
+function marioMakerOnDOMChange(mutations) {
+	mutations.forEach(function(mutation) {
+		for (var i = 0; i < mutation.addedNodes.length; i++) {
+			node = mutation.addedNodes[i];
+			if (node.parentNode.nextSibling == null || !node.parentNode.nextSibling.classList.contains("marioMakerDirectBookmark")) {
+				if (node.nodeType == Node.ELEMENT_NODE) {
+					var tag = node.nodeName.toLowerCase();
+					if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
+						marioMakerReplaceInElement(node, regex);
+				} else if (node.nodeType == Node.TEXT_NODE) {
+					marioMakerReplaceInText(node, regex);
+				}
+			}
+		}
+	});
+}
+
 var imageBookmark = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwWEgEDAI72/QAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAQElEQVQ4y2P8//8/AyWACZ+k3EbG/3IbGf+TbQDFLhghBjD+//+fgVBI4wKP/P8zUscF+NIBzKbRaKR1OqAEAACkzxevPUlGPgAAAABJRU5ErkJggg==';
 var imageUnbookmark = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwWEgIEtccwnQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAASklEQVQ4y2P8//8/AyWACZ+k3EZGBrmNjOQbQLELhoYBjPhi4R0PD5wt9OULbgPe8fCQFZdCX74w0tYLsDTwyP//aDoYsIREDAAAcYEarSA1+NcAAAAASUVORK5CYII=';
 
@@ -156,3 +174,7 @@ var regex = /[0-9a-f]{4}[- ][0-9a-f]{4}[- ][0-9a-f]{4}[- ][0-9a-f]{4}/gi;
 
 
 marioMakerReplaceInElement(document.body, regex);
+
+var observer = new MutationObserver(marioMakerOnDOMChange);
+var config = {childList: true, subtree: true};
+observer.observe(document.body, config);
