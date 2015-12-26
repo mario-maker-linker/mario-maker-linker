@@ -1,2 +1,5 @@
 build/
 *.xpi
+*.pem
+*.crx
+*.zip
