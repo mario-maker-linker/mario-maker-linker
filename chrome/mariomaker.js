@@ -1,1 +1,1 @@
-../mariomaker.js
+../js/mariomaker.js
