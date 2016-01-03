@@ -207,7 +207,7 @@
 	var imageBookmark = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwWEgEDAI72/QAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAQElEQVQ4y2P8//8/AyWACZ+k3EbG/3IbGf+TbQDFLhghBjD+//+fgVBI4wKP/P8zUscF+NIBzKbRaKR1OqAEAACkzxevPUlGPgAAAABJRU5ErkJggg==';
 	var imageUnbookmark = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwWEgIEtccwnQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAASklEQVQ4y2P8//8/AyWACZ+k3EZGBrmNjOQbQLELhoYBjPhi4R0PD5wt9OULbgPe8fCQFZdCX74w0tYLsDTwyP//aDoYsIREDAAAcYEarSA1+NcAAAAASUVORK5CYII=';
 
-	var idRegex = /[0-9a-f]{4}[- ][0-9a-f]{4}[- ][0-9a-f]{4}[- ][0-9a-f]{4}/gi;
+	var idRegex = /(?:[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}|[0-9a-f]{4} [0-9a-f]{4} [0-9a-f]{4} [0-9a-f]{4})/gi;
 	var linkRegex = /[Hh][Tt][Tt][Pp][Ss]?:\/\/[Ss][Uu][Pp][Ee][Rr][Mm][Aa][Rr][Ii][Oo][Mm][Aa][Kk][Ee][Rr][Bb][Oo][Oo][Kk][Mm][Aa][Rr][Kk].[Nn][Ii][Nn][Tt][Ee][Nn][Dd][Oo].[Nn][Ee][Tt]\/courses\/([0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4})/g; //Sorry ._. Only way to make regex partually case insensitive
 
 	searchInElement(document.body);
