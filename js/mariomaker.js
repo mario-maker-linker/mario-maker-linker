@@ -1,29 +1,55 @@
 (function() {
-	function searchInElement(element, regex) {
+	function searchInElement(element) {
 		for (var i = 0; i < element.childNodes.length; i++) {
 			var child = element.childNodes[i];
 			if (child.nodeType == Node.ELEMENT_NODE) {
 				var tag = child.nodeName.toLowerCase();
-				if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
-					searchInElement(child, regex);
+				if (tag == 'a') {
+					searchInLink(child);
+				} else if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
+					searchInElement(child);
 			} else if (child.nodeType == Node.TEXT_NODE) {
-				searchInText(child, regex);
+				searchInText(child);
 			}
 		}
 	}
-	function searchInText(text, regex) {
+	function searchInText(text) {
 		var match;
 		var matches = [];
-		while (match = regex.exec(text.data)) {
+		idRegex.lastIndex = 0; //Reset the regex object
+		while (match = idRegex.exec(text.data)) {
 			matches.push(match);
 		}
 
 		for (var i = 0; i < matches.length; i++) {
-			getCourseInfo(matches[i], text);
+			var id = normalizeCourseId(matches[i][0])
+			getCourseInfo(id, (function(match, text) {
+				return function(courseInfo) {
+					if (courseInfo !== undefined) {
+						insertLink(courseInfo, match, text);
+						insertButton(courseInfo, text.nextSibling);
+					}
+				};
+			})(matches[i], text));
 		}
 	}
 
-	function getCourseInfo(match, text) {
+	function searchInLink(link) {
+		linkRegex.lastIndex = 0; //Reset the regex object
+		var match = linkRegex.exec(link.href);
+		if (match !== null) {
+			var id = normalizeCourseId(match[1]);
+			getCourseInfo(id, (function(link) {
+				return function(courseInfo) { //Horrible Hack. Please ignore
+					if (courseInfo !== undefined) {
+						insertButton(courseInfo, link);
+					}
+				};
+			})(link));
+		}
+	}
+
+	function getCourseInfo(id, callback) {
 		var request = new XMLHttpRequest();
 
 		request.onreadystatechange = function() {
@@ -46,25 +72,27 @@
 					}
 
 					if (token !== null) {
-						insertLink(id, match, token, isBookmarked, text);
-						insertButton(id, match, token, isBookmarked, text);
+						 callback({
+							id: id,
+							isBookmarked: isBookmarked,
+							token: token
+						});
 					}
 				}
 			}
 		}
-		var id = normalizedCourseID(match[0]);
 		request.open("GET", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
 		request.withCredentials = true;
 		request.send()
 	}
 
-	function normalizedCourseID(string) {
+	function normalizeCourseId(string) {
 		return string.replace(/ /g, '-').toUpperCase();
 	}
 
-	function insertLink(id, match, token, isBookmarked, text) {
+	function insertLink(courseInfo, match, text) {
 		var link = document.createElement('a');
-		link.href = 'https://supermariomakerbookmark.nintendo.net/courses/'+id;
+		link.href = 'https://supermariomakerbookmark.nintendo.net/courses/'+courseInfo.id;
 		link.appendChild(document.createTextNode(match[0]));
 		text.splitText(match.index);
 		text.nextSibling.splitText(match[0].length);
@@ -72,19 +100,19 @@
 
 	}
 
-	function insertButton(id, match, token, isBookmarked, text) {
+	function insertButton(courseInfo, text) {
 		var directbookmark = document.createElement('a');
 		directbookmark.href = "";
-		if (isBookmarked) {
+		if (courseInfo.isBookmarked) {
 			directbookmark.onclick = function(event) {
-				setBookmark(id, token, event.target);
+				setBookmark(courseInfo.id, courseInfo.token, event.target);
 				return false;
 			};
 			imageSrc = imageBookmark;
 		}
 		else {
 			directbookmark.onclick = function(event) {
-				unsetBookmark(id, token, event.target);
+				unsetBookmark(courseInfo.id, courseInfo.token, event.target);
 				return false;
 			};
 			imageSrc = imageUnbookmark;
@@ -94,7 +122,7 @@
 		directbookmarkimage.className = "marioMakerDirectBookmark";
 		directbookmark.appendChild(directbookmarkimage);
 
-		text.parentNode.insertBefore(directbookmark, text.nextSibling.nextSibling);
+		text.parentNode.insertBefore(directbookmark, text.nextSibling);
 	}
 
 	function setBookmark(id, token, button) {
@@ -159,9 +187,9 @@
 					if (node.nodeType == Node.ELEMENT_NODE) {
 						var tag = node.nodeName.toLowerCase();
 						if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
-							searchInElement(node, regex);
+							searchInElement(node);
 					} else if (node.nodeType == Node.TEXT_NODE) {
-						searchInText(node, regex);
+						searchInText(node);
 					}
 				}
 			}
@@ -171,10 +199,10 @@
 	var imageBookmark = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwWEgEDAI72/QAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAQElEQVQ4y2P8//8/AyWACZ+k3EbG/3IbGf+TbQDFLhghBjD+//+fgVBI4wKP/P8zUscF+NIBzKbRaKR1OqAEAACkzxevPUlGPgAAAABJRU5ErkJggg==';
 	var imageUnbookmark = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwWEgIEtccwnQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAASklEQVQ4y2P8//8/AyWACZ+k3EZGBrmNjOQbQLELhoYBjPhi4R0PD5wt9OULbgPe8fCQFZdCX74w0tYLsDTwyP//aDoYsIREDAAAcYEarSA1+NcAAAAASUVORK5CYII=';
 
-	var regex = /[0-9a-f]{4}[- ][0-9a-f]{4}[- ][0-9a-f]{4}[- ][0-9a-f]{4}/gi;
+	var idRegex = /[0-9a-f]{4}[- ][0-9a-f]{4}[- ][0-9a-f]{4}[- ][0-9a-f]{4}/gi;
+	var linkRegex = /[Hh][Tt][Tt][Pp][Ss]?:\/\/[Ss][Uu][Pp][Ee][Rr][Mm][Aa][Rr][Ii][Oo][Mm][Aa][Kk][Ee][Rr][Bb][Oo][Oo][Kk][Mm][Aa][Rr][Kk].[Nn][Ii][Nn][Tt][Ee][Nn][Dd][Oo].[Nn][Ee][Tt]\/courses\/([0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4})/g; //Sorry ._. Only way to make regex partually case insensitive
 
-
-	searchInElement(document.body, regex);
+	searchInElement(document.body);
 
 	var observer = new MutationObserver(onDOMChange);
 	var config = {childList: true, subtree: true};
