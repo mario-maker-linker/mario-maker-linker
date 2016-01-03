@@ -1,0 +1,30 @@
+#!/bin/bash
+
+files=$(git diff --cached --name-only --diff-filter=ACM | grep ".js$")
+if [ "$files" = "" ]; then 
+    exit 0 
+fi
+
+pass=true
+
+echo -e "\nValidating JavaScript:\n"
+
+for file in ${files}; do
+    result=$(jshint ${file} | egrep "error?$")
+    if [ "$result" != "" ]; then
+        echo -e "\t\033[31mJSHint Failed: ${file}\033[0m"
+        pass=false
+    else
+        echo -e "\t\033[32mJSHint Passed: ${file}\033[0m"
+    fi
+done
+
+echo -e "\nJavaScript validation complete\n"
+
+if ! $pass; then
+    echo -e "\033[41mCOMMIT FAILED:\033[0m Your commit contains files that should pass JSHint but do not. Please fix the JSHint errors and try again.\n"
+    exit 1
+else
+    echo -e "\033[42mCOMMIT SUCCEEDED\033[0m\n"
+fi
+
