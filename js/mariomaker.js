@@ -17,35 +17,39 @@
 		var match;
 		var matches = [];
 		idRegex.lastIndex = 0; //Reset the regex object
-		while (match = idRegex.exec(text.data)) {
+		while ((match = idRegex.exec(text.data)) !== null) {
 			matches.push(match);
 		}
 
+		function generateCallback(match, text) {
+			return function(courseInfo) {
+				if (courseInfo !== undefined) {
+					insertLink(courseInfo, match, text);
+					insertButton(courseInfo, text.nextSibling);
+				}
+			};
+		}
+
 		for (var i = 0; i < matches.length; i++) {
-			var id = normalizeCourseId(matches[i][0])
-			getCourseInfo(id, (function(match, text) {
-				return function(courseInfo) {
-					if (courseInfo !== undefined) {
-						insertLink(courseInfo, match, text);
-						insertButton(courseInfo, text.nextSibling);
-					}
-				};
-			})(matches[i], text));
+			var id = normalizeCourseId(matches[i][0]);
+			getCourseInfo(id, generateCallback(matches[i], text));
 		}
 	}
 
 	function searchInLink(link) {
+		function generateCallback(link) {
+			return function(courseInfo) { //Horrible Hack. Please ignore
+				if (courseInfo !== undefined) {
+					insertButton(courseInfo, link);
+				}
+			};
+		}
+
 		linkRegex.lastIndex = 0; //Reset the regex object
 		var match = linkRegex.exec(link.href);
 		if (match !== null) {
 			var id = normalizeCourseId(match[1]);
-			getCourseInfo(id, (function(link) {
-				return function(courseInfo) { //Horrible Hack. Please ignore
-					if (courseInfo !== undefined) {
-						insertButton(courseInfo, link);
-					}
-				};
-			})(link));
+			getCourseInfo(id, generateCallback(link));
 		}
 	}
 
@@ -59,9 +63,10 @@
 					var doc = parser.parseFromString(request.responseText, "text/html");
 
 					var metas = doc.getElementsByTagName("meta");
+					var token = null;
 					for (var i = 0; i < metas.length; i++) {
 						if (metas[i].getAttribute("name") == "csrf-token") {
-							var token = metas[i].getAttribute("content");
+							token = metas[i].getAttribute("content");
 						}
 					}
 
@@ -80,10 +85,10 @@
 					}
 				}
 			}
-		}
+		};
 		request.open("GET", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
 		request.withCredentials = true;
-		request.send()
+		request.send();
 	}
 
 	function normalizeCourseId(string) {
@@ -135,7 +140,7 @@
 					button.parentElement.onclick = function(event) {
 						unsetBookmark(id, token, event.target);
 						return false;
-					}
+					};
 				}
 				else {
 					alert("Error. Please make sure that you are logged in on supermariomakerbookmark.nintendo.net");
@@ -162,7 +167,7 @@
 					button.parentElement.onclick = function(event) {
 						setBookmark(id, token, event.target);
 						return false;
-					}
+					};
 				}
 				else {
 					alert("Error. Please make sure that you are logged in on supermariomakerbookmark.nintendo.net");
@@ -183,7 +188,7 @@
 		mutations.forEach(function(mutation) {
 			for (var i = 0; i < mutation.addedNodes.length; i++) {
 				node = mutation.addedNodes[i];
-				if (node.parentNode.nextSibling == null || !node.parentNode.nextSibling.classList.contains("marioMakerDirectBookmark")) {
+				if (node.parentNode.nextSibling === null || !node.parentNode.nextSibling.classList.contains("marioMakerDirectBookmark")) {
 					if (node.nodeType == Node.ELEMENT_NODE) {
 						var tag = node.nodeName.toLowerCase();
 						if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
