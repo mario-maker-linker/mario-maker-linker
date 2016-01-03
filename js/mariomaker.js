@@ -191,7 +191,10 @@
 				if (node.parentNode.nextSibling === null || !node.parentNode.nextSibling.classList.contains("marioMakerDirectBookmark")) {
 					if (node.nodeType == Node.ELEMENT_NODE) {
 						var tag = node.nodeName.toLowerCase();
-						if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
+						if (tag == 'a') {
+							searchInLink(node);
+						}
+						else if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
 							searchInElement(node);
 					} else if (node.nodeType == Node.TEXT_NODE) {
 						searchInText(node);
