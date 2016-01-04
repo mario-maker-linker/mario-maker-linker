@@ -54,41 +54,54 @@
 	}
 
 	function getCourseInfo(id, callback) {
-		var request = new XMLHttpRequest();
+		if (courseInfoCache[id] !== undefined) {
+			callback(courseInfoCache[id]);
+		}
+		else if (courseInfoCallbacks[id] !== undefined) {
+			courseInfoCallbacks[id].push(callback);
+		} else {
+			courseInfoCallbacks[id] = [callback];
 
-		request.onreadystatechange = function() {
-			if (request.readyState == XMLHttpRequest.DONE) {
-				if (request.status == 200) {
-					var parser = new DOMParser();
-					var doc = parser.parseFromString(request.responseText, "text/html");
+			var request = new XMLHttpRequest();
 
-					var metas = doc.getElementsByTagName("meta");
-					var token = null;
-					for (var i = 0; i < metas.length; i++) {
-						if (metas[i].getAttribute("name") == "csrf-token") {
-							token = metas[i].getAttribute("content");
+			request.onreadystatechange = function() {
+				if (request.readyState == XMLHttpRequest.DONE) {
+					if (request.status == 200) {
+						var parser = new DOMParser();
+						var doc = parser.parseFromString(request.responseText, "text/html");
+
+						var metas = doc.getElementsByTagName("meta");
+						var token = null;
+						for (var i = 0; i < metas.length; i++) {
+							if (metas[i].getAttribute("name") == "csrf-token") {
+								token = metas[i].getAttribute("content");
+							}
+						}
+
+						var bookmarkbutton = doc.getElementsByClassName("button playlist link off")[0];
+						var isBookmarked = true;
+						if (bookmarkbutton.classList.contains("disabled")) {
+							isBookmarked = false;
+						}
+
+						if (token !== null) {
+							var courseInfo = {
+								id: id,
+								isBookmarked: isBookmarked,
+								token: token
+							};
+							courseInfoCache[id] = courseInfo;
+							for (i = 0; i < courseInfoCallbacks[id].length; i++) {
+								courseInfoCallbacks[id][i](courseInfo);
+							}
 						}
 					}
-
-					var bookmarkbutton = doc.getElementsByClassName("button playlist link off")[0];
-					var isBookmarked = true;
-					if (bookmarkbutton.classList.contains("disabled")) {
-						isBookmarked = false;
-					}
-
-					if (token !== null) {
-						 callback({
-							id: id,
-							isBookmarked: isBookmarked,
-							token: token
-						});
-					}
 				}
-			}
-		};
-		request.open("GET", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
-		request.withCredentials = true;
-		request.send();
+			};
+			request.open("GET", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
+			request.withCredentials = true;
+			request.send();
+		}
 	}
 
 	function normalizeCourseId(string) {
@@ -209,6 +222,9 @@
 
 	var idRegex = /(?:[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}|[0-9a-f]{4} [0-9a-f]{4} [0-9a-f]{4} [0-9a-f]{4})/gi;
 	var linkRegex = /[Hh][Tt][Tt][Pp][Ss]?:\/\/[Ss][Uu][Pp][Ee][Rr][Mm][Aa][Rr][Ii][Oo][Mm][Aa][Kk][Ee][Rr][Bb][Oo][Oo][Kk][Mm][Aa][Rr][Kk].[Nn][Ii][Nn][Tt][Ee][Nn][Dd][Oo].[Nn][Ee][Tt]\/courses\/([0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4})/g; //Sorry ._. Only way to make regex partually case insensitive
+
+	var courseInfoCache = [];
+	var courseInfoCallbacks = [];
 
 	searchInElement(document.body);
 
