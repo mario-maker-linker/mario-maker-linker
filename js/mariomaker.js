@@ -38,7 +38,7 @@
 
 	function searchInLink(link) {
 		function generateCallback(link) {
-			return function(courseInfo) { //Horrible Hack. Please ignore
+			return function(courseInfo) {
 				if (courseInfo !== undefined) {
 					insertButton(courseInfo, link);
 				}
@@ -167,6 +167,7 @@
 		request.setRequestHeader("X-CSRF-Token", token);
 		request.setRequestHeader("Referer", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
 		request.withCredentials = true;
+		button.setAttribute('src', imageLoading);
 		request.send();
 	}
 
@@ -194,6 +195,7 @@
 		request.setRequestHeader("X-CSRF-Token", token);
 		request.setRequestHeader("Referer", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
 		request.withCredentials = true;
+		button.setAttribute('src', imageLoading);
 		request.send();
 	}
 
@@ -217,8 +219,11 @@
 		});
 	}
 
+	//Base64 encoded images to prevent dealing with browser specific resource loading
 	var imageBookmark = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwWEgEDAI72/QAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAQElEQVQ4y2P8//8/AyWACZ+k3EbG/3IbGf+TbQDFLhghBjD+//+fgVBI4wKP/P8zUscF+NIBzKbRaKR1OqAEAACkzxevPUlGPgAAAABJRU5ErkJggg==';
 	var imageUnbookmark = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwWEgIEtccwnQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAASklEQVQ4y2P8//8/AyWACZ+k3EZGBrmNjOQbQLELhoYBjPhi4R0PD5wt9OULbgPe8fCQFZdCX74w0tYLsDTwyP//aDoYsIREDAAAcYEarSA1+NcAAAAASUVORK5CYII=';
+	var imageLoading = 'data:image/gif;base64,R0lGODlhEAAQAMIAAP+EAP+ICP+ICf////+EAP+EAP+EAP+EACH/C05FVFNDQVBFMi4wAwEAAAAh/hFDcmVhdGVkIHdpdGggR0lNUAAh+QQFCgAEACwAAAAAEAAQAAADIji63L7hPQCkqg5bRrf/kKeJQASOYNN91HpN7QII6IXWaQIAIfkEBQoABwAsAQACAA0ADQAAAyQ4urwHoC3wYJTK0sN7h154YM1IOifziCEgXA34MJsXQ+kQSAkAIfkEBQoABwAsAQABAA0ADQAAAyR4CtMNQC0RF4yuWnicf9UnNsroBZBJMuogvXDXeunMftgXHwkAIfkEBQoABwAsAgABAA0ADQAAAyI4urHuIL5DK4BUvgEEqCD4beRBTqcThtEqRtcJf/HWpk4CADs=';
+
 
 	var idRegex = /(?:[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}|[0-9a-f]{4} [0-9a-f]{4} [0-9a-f]{4} [0-9a-f]{4})/gi;
 	var linkRegex = /[Hh][Tt][Tt][Pp][Ss]?:\/\/[Ss][Uu][Pp][Ee][Rr][Mm][Aa][Rr][Ii][Oo][Mm][Aa][Kk][Ee][Rr][Bb][Oo][Oo][Kk][Mm][Aa][Rr][Kk].[Nn][Ii][Nn][Tt][Ee][Nn][Dd][Oo].[Nn][Ee][Tt]\/courses\/([0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4})/g; //Sorry ._. Only way to make regex partually case insensitive
