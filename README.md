@@ -1,14 +1,10 @@
 # Super Mario Maker Course ID Linkifier
 
-<small>(I'm open to suggestions for a better name)</small>
+Herein lies a script and some browser extensions to turn all unlinked Super Mario Maker Course IDs into Bookmark links.
 
-## 2015\-12\-22: Bookmark is live, and this now works!
+Thanks to the most excellent (and extensive) work of @freundTech, the script now has several snazzy features. Now it adds a little plus-sign next to all course links that lets you bookmark the course without visiting the Bookmark site, and it watches for new HTML added to the page, so it will work in chat web apps like Kiwi IRC, as well as any other site that loads content via AJAX.
 
-Herein lies a script and one or more browser extensions to turn all unlinked Super Mario Maker Course IDs into Bookmark links.
-
-At the moment this uses a very, very crude regular expression replacement on every DOM node in the document. This is not ideal, of course, so any pull requests to make this thing better are most welcome.
-
-**`mariomaker.js`** can be run by itself as a user script (is Greasemonkey still a thing? I don't even know) or bookmarklet. The script should be executed after the DOM has finished loading.
+**`mariomaker.js`** can be run by itself as a user script or bookmarklet. The script should be executed after the DOM has finished loading.
 
 ## TODO:
 
@@ -17,9 +13,11 @@ At the moment this uses a very, very crude regular expression replacement on eve
 - Build script for all extensions, if possible
 
 - Be more graceful about what domains the script runs on
-    + Pre-load with common Mario Maker sharing sites?
-    + Allow domains to be configured? Will require UI and way deeper extension knowledge than I have at this moment
-    + A simple toolbar button to toggle the script on and off?
+    + Pre-load with common Mario Maker sharing sites
+    + Allow domains to be configured
+    + Add a toolbar button to toggle the script on and off
+
+- Come up with a snazzier name for this thing
 
 ### Safari extension
 
