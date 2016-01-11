@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Super Mario Maker Course ID Linkifier tests</title>
+
+	</head>
+
+	<body>
+		<header>
+			<h1>Super Mario Maker Course ID Linkifier tests</h1>
+
+			<p>Below are various permutations of Course IDs that should (or should not) be linked by the script/extension.</p>
+
+			<p>I'm using one of my own courses, <a href="https://supermariomakerbookmark.nintendo.net/courses/9514-0000-0113-F801">Cha-Cha-Cha!</a>, as the Course ID to test with, since I don't foresee myself uploading a new version of that one anytime soon.</p>
+
+			<p><strong>If you ever load this file and many things are broken simultaneously</strong>, the first thing to do is make sure that course still actually exists.</p>
+		</header>
+
+		<section id="plain">
+			<h1>I. Plain Course IDs that should have both permalinks and immediate-bookmark links created</h1>
+
+			<ul>
+				<li>9514-0000-0113-F801 · Normal Course ID</li>
+				<li>9514 0000 0113 F801 · Space-separated</li>
+				<li>9514-0000-0113-f801 · Lowercase hex</li>
+				<li>9514 0000 0113 f801 · Lowercase hex space-separated</li>
+			</ul>
+		</section>
+
+		<section id="already-linked">
+			<h1>II. Links to Bookmark site that need to have immediate-bookmark links created</h1>
+
+			<ul>
+				<li><a href="https://supermariomakerbookmark.nintendo.net/courses/9514-0000-0113-F801">Plain language link text</a></li>
+				<li><a href="https://supermariomakerbookmark.nintendo.net/courses/9514-0000-0113-F801">9514-0000-0113-F801</a> · Course ID as linked text</li>
+				<li><a href="https://supermariomakerbookmark.nintendo.net/courses/9514-0000-0113-F801">1111-0000-0113-F801</a> · Nonexistent Course ID as linked text</li>
+			</ul>
+		</section>
+
+		<section class="no-link-needed" id="no-links">
+			<h1>III a. Cases where no links should be created (result: no links)</h1>
+
+			<ul>
+				<li>1111-0000-0113-F801 · Non-existent course (bad checksum)</li>
+				<li>abcd-9514-0000-0113-F801-abcd · In the middle of longer hex strings with separators</li> 
+				<li>abcd951400000113F801abcd · In the middle of longer hex strings without separators</li> 
+			</ul>
+		</section>
+
+		<section class="no-link-needed" id="untouched-link">
+			<h1>III b. Cases where no links should be created (result: existing link untouched)</h1>
+
+			<ul>
+				<li><a href="https://supermariomakerbookmark.nintendo.net/courses/1111-0000-0113-F801">Pre-constructed 404 link with plain language text</a></li>
+			</ul>
+		</section>
+
+		<section id="ambiguous">
+			<h1>IV. Ambiguous cases where design discussions/decisions are needed</h1>
+
+			<ul>
+				<li>9514 0000-0113 F801 · Mixture of separators</li>
+				<li>951400000113F801 · No separators</li>
+				<li><a href="https://supermariomakerbookmark.nintendo.net/courses/1111-0000-0113-F801">9514-0000-0113-F801</a> · Pre-constructed 404 link with non-404 Course ID as text</li>
+			</ul>
+		</section>
+</html>
+
