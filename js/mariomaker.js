@@ -94,6 +94,7 @@
 							for (i = 0; i < courseInfoCallbacks[id].length; i++) {
 								courseInfoCallbacks[id][i](courseInfo);
 							}
+							courseInfoCallbacks.splice(id, 1);
 						}
 					}
 				}
@@ -122,15 +123,15 @@
 		var directbookmark = document.createElement('a');
 		directbookmark.href = "";
 		if (courseInfo.isBookmarked) {
-			directbookmark.onclick = function(event) {
-				setBookmark(courseInfo.id, courseInfo.token, event.target);
+			directbookmark.onclick = function() {
+				setBookmark(courseInfo.id, courseInfo.token);
 				return false;
 			};
 			imageSrc = imageBookmark;
 		}
 		else {
-			directbookmark.onclick = function(event) {
-				unsetBookmark(courseInfo.id, courseInfo.token, event.target);
+			directbookmark.onclick = function() {
+				unsetBookmark(courseInfo.id, courseInfo.token);
 				return false;
 			};
 			imageSrc = imageUnbookmark;
@@ -141,28 +142,36 @@
 		directbookmark.appendChild(directbookmarkimage);
 
 		text.parentNode.insertBefore(directbookmark, text.nextSibling);
+		if (bookmarkButtonDict[courseInfo.id] === undefined) {
+			bookmarkButtonDict[courseInfo.id] = [];
+		}
+		bookmarkButtonDict[courseInfo.id].push(directbookmark);
+
 	}
 
-	function setBookmark(id, token, button) {
+	function setBookmark(id, token) {
 		var request = new XMLHttpRequest();
 
 		request.onreadystatechange = function() {
 			if (request.readyState == XMLHttpRequest.DONE) {
 				if (request.status == 200) {
-					button.setAttribute('src', imageUnbookmark);
-					button.parentElement.onclick = function(event) {
-						unsetBookmark(id, token, event.target);
-						return false;
-					};
+					for (var i = 0; i < bookmarkButtonDict[id].length; i++) {
+						bookmarkButtonDict[id][i].firstChild.setAttribute('src', imageUnbookmark);
+						bookmarkButtonDict[id][i].onclick = function() {
+							unsetBookmark(id, token);
+							return false;
+						};
+					}
 				}
 				else {
 					alert("Error. Please make sure that you are logged in on supermariomakerbookmark.nintendo.net");
-					button.setAttribute('src', imageBookmark);
-					button.parentElement.onclick = function(event) {
-						setBookmark(id, token, event.target);
-						return false;
-					};
-
+                    for (var i = 0; i < bookmarkButtonDict[id].length; i++) {
+							bookmarkButtonDict[id][i].firstChild.setAttribute('src', imageBookmark);
+							bookmarkButtonDict[id][i].onclick = function(event) {
+								setBookmark(id, token, event.target);
+								return false;
+						};
+					}
 				}
 			}
 		};
@@ -173,31 +182,36 @@
 		request.setRequestHeader("X-CSRF-Token", token);
 		request.setRequestHeader("Referer", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
 		request.withCredentials = true;
-		button.setAttribute('src', imageLoading);
-		button.parentElement.onclick = doNothing;
+        for (var i = 0; i < bookmarkButtonDict[id].length; i++) {
+			 bookmarkButtonDict[id][i].firstChild.setAttribute('src', imageLoading);
+			bookmarkButtonDict[id][i].onclick = doNothing;
+		}
 		request.send();
 	}
 
-	function unsetBookmark(id, token, button) {
+	function unsetBookmark(id, token) {
 		var request = new XMLHttpRequest();
 
 		request.onreadystatechange = function() {
 			if (request.readyState == XMLHttpRequest.DONE) {
 				if (request.status == 200) {
-					button.setAttribute('src', imageBookmark);
-					button.parentElement.onclick = function(event) {
-						setBookmark(id, token, event.target);
-						return false;
-					};
+					for (var i = 0; i < bookmarkButtonDict[id].length; i++) {
+						bookmarkButtonDict[id][i].firstChild.setAttribute('src', imageBookmark);
+						bookmarkButtonDict[id][i].onclick = function() {
+							setBookmark(id, token);
+							return false;
+						};
+					}
 				}
 				else {
 					alert("Error. Please make sure that you are logged in on supermariomakerbookmark.nintendo.net");
-					button.setAttribute('src', imageUnBookmark);
-					button.parentElement.onclick = function(event) {
-						unsetBookmark(id, token, event.target);
-						return false;
-					};
-
+                    for (var i = 0; i < bookmarkButtonDict[id].length; i++) {
+						bookmarkButtonDict[id][i].firstChild.setAttribute('src', imageUnBookmark);
+						bookmarkButtonDict[id][i].onclick = function(event) {
+							unsetBookmark(id, token, event.target);
+							return false;
+						};
+					}
 				}
 			}
 		};
@@ -208,8 +222,10 @@
 		request.setRequestHeader("X-CSRF-Token", token);
 		request.setRequestHeader("Referer", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
 		request.withCredentials = true;
-		button.setAttribute('src', imageLoading);
-		button.parentElement.onclick = doNothing;
+        for (var i = 0; i < bookmarkButtonDict[id].length; i++) {
+			bookmarkButtonDict[id][i].firstChild.setAttribute('src', imageLoading);
+			bookmarkButtonDict[id][i].onclick = doNothing;
+		}
 		request.send();
 	}
 
@@ -248,6 +264,7 @@
 
 	var courseInfoCache = [];
 	var courseInfoCallbacks = [];
+	var bookmarkButtonDict = [];
 
 	searchInElement(document.body);
 
