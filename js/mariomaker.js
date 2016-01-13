@@ -180,7 +180,7 @@
 		request.setRequestHeader("Accept", "application/json");
 		request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 		request.setRequestHeader("X-CSRF-Token", token);
-		request.setRequestHeader("Referer", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
+		//request.setRequestHeader("Referer", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
 		request.withCredentials = true;
         for (var i = 0; i < bookmarkButtonDict[id].length; i++) {
 			 bookmarkButtonDict[id][i].firstChild.setAttribute('src', imageLoading);
@@ -220,7 +220,7 @@
 		request.setRequestHeader("Accept", "application/json");
 		request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 		request.setRequestHeader("X-CSRF-Token", token);
-		request.setRequestHeader("Referer", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
+		//request.setRequestHeader("Referer", "https://supermariomakerbookmark.nintendo.net/courses/"+id);
 		request.withCredentials = true;
         for (var i = 0; i < bookmarkButtonDict[id].length; i++) {
 			bookmarkButtonDict[id][i].firstChild.setAttribute('src', imageLoading);
