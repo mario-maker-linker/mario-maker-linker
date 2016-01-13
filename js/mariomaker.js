@@ -1,6 +1,6 @@
 (function() {
 	function searchInElement(element) {
-		for (var i = 0; i < element.childNodes.length; i++) {
+		for (var i = element.childNodes.length-1; i >= 0; i--) {
 			var child = element.childNodes[i];
 			if (child.nodeType == Node.ELEMENT_NODE) {
 				var tag = child.nodeName.toLowerCase();
@@ -237,7 +237,7 @@
 		mutations.forEach(function(mutation) {
 			for (var i = 0; i < mutation.addedNodes.length; i++) {
 				node = mutation.addedNodes[i];
-				if (node.parentNode.nextSibling === null || !node.parentNode.nextSibling.classList.contains("marioMakerDirectBookmark")) {
+				if (node.parentNode !== null && (node.parentNode.nextSibling === null || (node.parentNode.nextSibling.classList !== undefined && node.parentNode.nextSibling.classList.contains("marioMakerDirectBookmark")))) {
 					if (node.nodeType == Node.ELEMENT_NODE) {
 						var tag = node.nodeName.toLowerCase();
 						if (tag == 'a') {
