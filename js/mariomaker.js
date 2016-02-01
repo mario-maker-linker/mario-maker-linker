@@ -1,11 +1,13 @@
 (function() {
 	function searchInElement(element) {
-		for (var i = element.childNodes.length-1; i >= 0; i--) {
+		for (var i = element.childNodes.length; i-->0;) {
 			var child = element.childNodes[i];
 			if (child.nodeType == Node.ELEMENT_NODE) {
 				var tag = child.nodeName.toLowerCase();
 				if (tag == 'a') {
-					searchInLink(child);
+					if (node.nextSibling === null || node.nextSibling.classList === undefined || !node.nextSibling.classList.contains("marioMakerDirectBookmark")) {
+						searchInLink(child);
+					}
 				} else if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
 					searchInElement(child);
 			} else if (child.nodeType == Node.TEXT_NODE) {
@@ -116,12 +118,13 @@
 		text.splitText(match.index);
 		text.nextSibling.splitText(match[0].length);
 		text.parentNode.replaceChild(link, text.nextSibling);
-
 	}
 
 	function insertButton(courseInfo, text) {
 		var directbookmark = document.createElement('a');
 		directbookmark.href = "";
+		directbookmark.className = "marioMakerDirectBookmark";
+
 		if (courseInfo.isBookmarked) {
 			directbookmark.onclick = function() {
 				setBookmark(courseInfo.id, courseInfo.token);
@@ -138,7 +141,6 @@
 		}
 		directbookmarkimage = document.createElement('img');
 		directbookmarkimage.setAttribute('src', imageSrc);
-		directbookmarkimage.className = "marioMakerDirectBookmark";
 		directbookmark.appendChild(directbookmarkimage);
 
 		text.parentNode.insertBefore(directbookmark, text.nextSibling);
@@ -235,19 +237,19 @@
 
 	function onDOMChange(mutations) {
 		mutations.forEach(function(mutation) {
-			for (var i = 0; i < mutation.addedNodes.length; i++) {
+			for (var i = mutation.addedNodes.length; i-->0;) {
 				node = mutation.addedNodes[i];
-				if (node.parentNode !== null && (node.parentNode.nextSibling === null || (node.parentNode.nextSibling.classList !== undefined && node.parentNode.nextSibling.classList.contains("marioMakerDirectBookmark")))) {
-					if (node.nodeType == Node.ELEMENT_NODE) {
-						var tag = node.nodeName.toLowerCase();
-						if (tag == 'a') {
+				if (node.nodeType == Node.ELEMENT_NODE) {
+					var tag = node.nodeName.toLowerCase();
+					if (tag == 'a') {
+						if (node.nextSibling === null || node.nextSibling.classList === undefined || !node.nextSibling.classList.contains("marioMakerDirectBookmark")) {
 							searchInLink(node);
 						}
-						else if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
-							searchInElement(node);
-					} else if (node.nodeType == Node.TEXT_NODE) {
-						searchInText(node);
 					}
+					else if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
+						searchInElement(node);
+				} else if (node.nodeType == Node.TEXT_NODE) {
+					searchInText(node);
 				}
 			}
 		});
