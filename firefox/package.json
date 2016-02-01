@@ -9,16 +9,13 @@
   "permissions": {
 	  "cross-domain-content": ["https://supermariomakerbookmark.nintendo.net"]
   },
-  "author": "75th",
-  "contributors": [
-	  "freundTech"
-  ],
-  "homepage": "https://github.com/75th/mario-maker-linker",
+  "author": "75th, freundTech",
+  "homepage": "https://github.com/mario-maker-linker/mario-maker-linker",
   "engines": {
     "firefox": ">=38.0a1",
     "fennec": ">=38.0a1"
   },
-  "license": "None",
+  "license": "MIT",
   "keywords": [
     "mario",
 	"maker",
