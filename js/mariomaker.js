@@ -5,7 +5,7 @@
 			if (child.nodeType == Node.ELEMENT_NODE) {
 				var tag = child.nodeName.toLowerCase();
 				if (tag == 'a') {
-					if (node.nextSibling === null || node.nextSibling.classList === undefined || !node.nextSibling.classList.contains("marioMakerDirectBookmark")) {
+					if (child.nextSibling === null || child.nextSibling.classList === undefined || !child.nextSibling.classList.contains("marioMakerDirectBookmark")) {
 						searchInLink(child);
 					}
 				} else if (tag != 'style' && tag != 'script' ) // special cases, don't touch CDATA elements
