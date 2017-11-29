@@ -5,9 +5,16 @@
 	"description": "Converts all Super Mario Maker Course IDs into Bookmark links",
 	"content_scripts": [
 		{
-			"matches": ["http://*/*", "https://*/*"],
-			"exclude_matches": ["*://supermariomakerbookmark.nintendo.net/*"],
-			"js": ["mariomaker.js"],
+			"matches": [
+				"http://*/*",
+				"https://*/*"
+			],
+			"exclude_matches": [
+				"*://supermariomakerbookmark.nintendo.net/*"
+			],
+			"js": [
+				"mariomaker.js"
+			],
 			"run_at": "document_end"
 		}
 	],
