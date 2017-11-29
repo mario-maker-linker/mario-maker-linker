@@ -1,3 +1,5 @@
+"use strict";
+
 (function () {
 	function searchInElement(element) {
 		for (var i = element.childNodes.length; i-- > 0;) {
@@ -5,7 +7,7 @@
 			if (child.nodeType === Node.ELEMENT_NODE) {
 				var tag = child.nodeName.toLowerCase();
 				if (tag === 'a') {
-					if (child.nextSibling === null || child.nextSibling.classList === undefined || !child.nextSibling.classList.contains("marioMakerDirectBookmark")) {
+					if (child.nextSibling === null || child.nextSibling.classList === undefined || !child.nextSibling.classList.contains(bookmarkClass)) {
 						searchInLink(child);
 					}
 				} else if (tag !== 'style' && tag !== 'script') // special cases, don't touch CDATA elements
@@ -124,8 +126,9 @@
 	function insertButton(courseInfo, text) {
 		var directbookmark = document.createElement('a');
 		directbookmark.href = "";
-		directbookmark.className = "marioMakerDirectBookmark";
+		directbookmark.className = bookmarkClass;
 
+		var imageSrc;
 		if (courseInfo.isBookmarked) {
 			directbookmark.onclick = function () {
 				setBookmark(courseInfo.id, courseInfo.token);
@@ -140,7 +143,7 @@
 			};
 			imageSrc = imageUnbookmark;
 		}
-		directbookmarkimage = document.createElement('img');
+		var directbookmarkimage = document.createElement('img');
 		directbookmarkimage.setAttribute('src', imageSrc);
 		directbookmark.appendChild(directbookmarkimage);
 
@@ -241,18 +244,20 @@
 	function onDOMChange(mutations) {
 		mutations.forEach(function (mutation) {
 			for (var i = mutation.addedNodes.length; i-- > 0;) {
-				node = mutation.addedNodes[i];
-				if (node.nodeType === Node.ELEMENT_NODE) {
-					var tag = node.nodeName.toLowerCase();
-					if (tag === 'a') {
-						if (node.nextSibling === null || node.nextSibling.classList === undefined || !node.nextSibling.classList.contains("marioMakerDirectBookmark")) {
-							searchInLink(node);
+				var node = mutation.addedNodes[i];
+				if (node.parentNode !== null) {
+					if (node.nodeType === Node.ELEMENT_NODE) {
+						var tag = node.nodeName.toLowerCase();
+						if (tag === 'a') {
+							if (node.nextSibling === null || node.nextSibling.classList === undefined || !node.nextSibling.classList.contains(bookmarkClass)) {
+								searchInLink(node);
+							}
 						}
+						else if (tag !== 'style' && tag !== 'script') // special cases, don't touch CDATA elements
+							searchInElement(node);
+					} else if (node.nodeType === Node.TEXT_NODE) {
+						searchInText(node);
 					}
-					else if (tag !== 'style' && tag !== 'script') // special cases, don't touch CDATA elements
-						searchInElement(node);
-				} else if (node.nodeType === Node.TEXT_NODE) {
-					searchInText(node);
 				}
 			}
 		});
@@ -266,6 +271,8 @@
 
 	var idRegex = /(?:[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}|[0-9a-f]{4} [0-9a-f]{4} [0-9a-f]{4} [0-9a-f]{4})/gi;
 	var linkRegex = /[Hh][Tt][Tt][Pp][Ss]?:\/\/[Ss][Uu][Pp][Ee][Rr][Mm][Aa][Rr][Ii][Oo][Mm][Aa][Kk][Ee][Rr][Bb][Oo][Oo][Kk][Mm][Aa][Rr][Kk].[Nn][Ii][Nn][Tt][Ee][Nn][Dd][Oo].[Nn][Ee][Tt]\/courses\/([0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4})/g; //Sorry ._. Only way to make regex partually case insensitive
+
+	var bookmarkClass = "marioMakerLinkifierDirectBookmark";
 
 	var courseInfoCache = [];
 	var courseInfoCallbacks = [];
